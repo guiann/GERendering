@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="GuianRenderer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="include/aqsis/riutil/;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/GuianRenderer" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="/usr/bin" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="include" />
+					<Add directory="/usr/include/boost" />
+				</Compiler>
+				<Linker>
+					<Add library="pthread" />
+					<Add library="X11" />
+					<Add library="Xi" />
+					<Add library="boost_regex" />
+					<Add library="boost_system" />
+					<Add library="boost_serialization" />
+					<Add library="boost_thread" />
+					<Add library="boost_filesystem" />
+					<Add library="boost_unit_test_framework" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="/usr/include" />
+		</Compiler>
+		<Linker>
+			<Add library="glut" />
+			<Add library="GL" />
+			<Add library="GLU" />
+			<Add library="Xxf86vm" />
+			<Add directory="/usr/lib" />
+		</Linker>
+		<Unit filename="include/aqsis/ri/ndspy.h" />
+		<Unit filename="include/aqsis/ri/pointcloud.h" />
+		<Unit filename="include/aqsis/ri/ri.h" />
+		<Unit filename="include/aqsis/ri/rif.h" />
+		<Unit filename="include/aqsis/ri/ritypes.h" />
+		<Unit filename="include/aqsis/ri/shadeop.h" />
+		<Unit filename="include/aqsis/ri/slo.h" />
+		<Unit filename="include/aqsis/ri/slx.h" />
+		<Unit filename="include/aqsis/riutil/errorhandler.h" />
+		<Unit filename="include/aqsis/riutil/interpclasscounts.h" />
+		<Unit filename="include/aqsis/riutil/primvartoken.h" />
+		<Unit filename="include/aqsis/riutil/primvartype.h" />
+		<Unit filename="include/aqsis/riutil/ri2ricxx.h" />
+		<Unit filename="include/aqsis/riutil/ribparser.h" />
+		<Unit filename="include/aqsis/riutil/ribwriter.h" />
+		<Unit filename="include/aqsis/riutil/ricxx.h" />
+		<Unit filename="include/aqsis/riutil/ricxx_filter.h" />
+		<Unit filename="include/aqsis/riutil/ricxxutil.h" />
+		<Unit filename="include/aqsis/riutil/riparamlist.h" />
+		<Unit filename="include/aqsis/riutil/risyms.h" />
+		<Unit filename="include/aqsis/riutil/tokendictionary.h" />
+		<Unit filename="include/renderer.h" />
+		<Unit filename="main.cpp" />
+		<Unit filename="src/renderer.cpp" />
+		<Unit filename="src/thirdparty/RIB/ri2rib.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/errorhandler_test.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/errorhandlerimpl.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/framedrop_filter.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/multistringbuffer.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/primvartoken.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/primvartoken_test.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/renderutil_filter.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ri2ricxx.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribinputbuffer.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribinputbuffer.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribinputbuffer_test.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/riblexer.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/riblexer.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/riblexer_impl.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/riblexer_test.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribparser.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribparser_impl.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribparser_test.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribtoken.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribtokenizer.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribtokenizer.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribtokenizer_test.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ribwriter.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ricxx2ri.h">
+			<Option virtualFolder="include/aqsis/riutil/" />
+		</Unit>
+		<Unit filename="src/thirdparty/RIB/riutil/ricxx_cache.h" />
+		<Unit filename="src/thirdparty/RIB/riutil/ricxx_filter.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/ricxx_validate.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/risyms.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/tee_filter.cpp" />
+		<Unit filename="src/thirdparty/RIB/riutil/tokendictionary.cpp" />
+		<Unit filename="src/thirdparty/aqsis_util/argparse.cpp" />
+		<Unit filename="src/thirdparty/aqsis_util/bitvector.cpp" />
+		<Unit filename="src/thirdparty/aqsis_util/exception.cpp" />
+		<Unit filename="src/thirdparty/aqsis_util/file.cpp" />
+		<Unit filename="src/thirdparty/aqsis_util/logging.cpp" />
+		<Unit filename="src/thirdparty/aqsis_util/popen.cpp" />
+		<Unit filename="src/thirdparty/aqsis_util/sstring.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<lib_finder disable_auto="1" />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
