@@ -5310,7 +5310,7 @@
 
 1427400587 /usr/include/boost/exception
 
-1331469189 source:/home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/thirdparty/aqsis_util/file.cpp
+1429132673 source:/home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/thirdparty/aqsis_util/file.cpp
 	<aqsis/util/file.h>
 	<cctype>
 	<cstring>
@@ -5463,4 +5463,38 @@
 	<stdarg.h>
 	<aqsis/aqsis.h>
 	<aqsis/util/sstring.h>
+
+1429803985 source:/home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/main.cpp
+	"views/window.h"
+	"renderer/raytracingRenderer.h"
+
+1429806817 source:/home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/views/window.cpp
+	"window.h"
+
+1429807010 /home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/views/window.h
+	<GL/glut.h>
+	<stdio.h>
+	<stdlib.h>
+	"../renderer/raytracingRenderer.h"
+
+1429806661 /home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/renderer/raytracingRenderer.h
+	<stdio.h>
+	<stdlib.h>
+	<cstring>
+	<math.h>
+
+1429806790 source:/home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/renderer/raytracingRenderer.cpp
+	"raytracingRenderer.h"
+
+1429804031 source:/home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/views/window.h
+	<GL/glut.h>
+	<stdio.h>
+	<stdlib.h>
+	"../renderer/raytracingRenderer.h"
+
+1429806661 source:/home/guian/codeResources/codeBlocksWorkspace/GuianRenderer/src/renderer/raytracingRenderer.h
+	<stdio.h>
+	<stdlib.h>
+	<cstring>
+	<math.h>
 

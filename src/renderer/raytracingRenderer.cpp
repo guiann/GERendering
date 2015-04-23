@@ -1,76 +1,16 @@
-//Raycasting - involves following the path of rays from the COP - centre of camera projection through the centre of
-//scene pixels.  Follow each of these rays to find that if it intersects an object to represent the colour of the
-//corresponding scene pixel on the viewing plane.  At the end of this process scene pixles will form an image on the
+#include "raytracingRenderer.h"
+
+//Raycasting - involves following the path of rays from the COP - center of camera projection through the center of
+//scene pixelsImgMap.  Follow each of these rays to find that if it intersects an object to represent the color of the
+//corresponding scene pixel on the viewing plane.  At the end of this process scene pixelsImgMap will form an image on the
 //screen
 
-#include <GL/glut.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 
-//Viewplane window size
-#define XMAX 1.0
-#define XMIN -1.0
-#define YMAX 1.0
-#define YMIN -1.0
-
-//Number of spheres and lights
-#define NSPHERE 3
-#define NLIGHT 2
-
-// Structure declaration_______________________________________________________
-
-//3D data structure to hold 3D points
-typedef struct {
-	float x;
-	float y;
-	float z;
-}
-Point;
-
-//Colour data structure
-typedef struct {
-	float r;
-	float g;
-	float b;
-}
-Colour;
-
-//light data structure
-typedef struct {
-	float r;
-	float g;
-	float b;
-	float x;
-	float y;
-	float z;
-}
-Light;
-
-//Sphere data structure
-typedef struct {
-	float x, y, z;//location
-	float r, g, b;//colour
-	float radius; // radius
-}
-Sphere;
-
-//Sphere3D data structure with K values for materials
-typedef struct {
-	float x, y, z;//location
-	float radius; // radius
-	Colour ka, kd, ks; //the material coeficients
-	float n; // the specular reflexion for this sphere
-	float ni ; // the refraction index of material
-
-}
-Sphere3D;
-
-//create the datatypes for a type Vector and for a type Matrix of Vectors
-typedef float Vector[3] ; //means a Vector is a pointer to float
-typedef float ** Matrix; //a Matrix is a pointer to a pointer to float
 
 // Global variables____________________________________________________________
+
+//Pixel array for our viewing plane
+ColourGrid pixelsImgMap;
 
 //array to hold three elements type sphere
 Sphere3D sphere [3];
@@ -82,68 +22,16 @@ Point COP = {0, 0, 3 };
 //define an ambiant light for the scene
 Colour Ia = {0.3, 0.3, 0.3};
 
-//Pixel array for our viewing plane
-Colour pixels [512][512];
+
 
 //count the number of recursive call for rayTrace
 int count;
 
-// Functions prototypes________________________________________________________
 
-//Display function
-void display();
+raytracingRenderer::raytracingRenderer()
+{
 
-//normalize fonction, to normalize any vector
-float * normalize( Vector );
-
-//normal fonction, to get the normal vector to a surface
-float *  normal( Point, Sphere3D);
-
-//viewVector fonction, to get the "Va" vector
-float *  viewVector( Point ) ;
-
-//lightVector fonction, to get the "La" vector
-float *  lightVector( Point , Light);
-
-//reflectVector function, to get the "Ra" vector
-float *  reflectVector( Vector, Vector) ;
-
-//refractVector function
-float * refractVector(Point, Vector, Vector, float, float );
-
-//dot fonction to compute scalar product.
-float  dot( Vector , Vector);
-
-// the reflection intensity function
-Colour reflectionIntensity( Vector, Point, Colour, Sphere3D, Vector);
-
-//recursive RayTracing function
-void rayTrace( Point , Vector, int , int  );
-
-int intersectionTest (Point, Vector, Sphere3D );
-
-
-
-// Functions bodies____________________________________________________________
-
-int main(int argc, char **argv){
-
-	//Creating graphics window
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);//GLUT DOUBLE prevents flickering of screen
-	glutInitWindowSize(512, 512);
-	glutInitWindowPosition(0, 0);
-	glutCreateWindow("RayTracing");
-	glutDisplayFunc(display);
-	glMatrixMode(GL_PROJECTION);
-
-	glLoadIdentity();
-	glOrtho(0.0, 512.0, 0.0, 512.0, -100.0, 100.0);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	//Lights information
+   	//Lights information
 
 	//light 1 coordinates and colour
 	lights[0].x = -3;
@@ -231,8 +119,33 @@ int main(int argc, char **argv){
 
 	sphere[2].n = 120;
 	sphere[2].ni = -1;
+}
 
+raytracingRenderer::~raytracingRenderer()
+{
+    //dtor
+}
 
+ColourGrid raytracingRenderer::getPixels(){
+
+     ColourGrid grid = (ColourGrid) malloc(sizeof(struct _colourGrid_t));
+
+    Colour **data = (Colour **) malloc(sizeof(Colour *) * 512);
+
+    for (int i = 0; i < 512; i++) {
+        data[i] = (Colour*) malloc(sizeof(Colour) * 512);
+
+        memset(data[i], 0, sizeof(int) * 512);
+    }
+
+    grid->data = data;
+    grid->width = 512;
+    grid->height = 512;
+
+    return grid;
+}
+void raytracingRenderer::render()
+{
 	int i,j;
 	float dx,dy,dz;
 	Vector direction;
@@ -242,7 +155,7 @@ int main(int argc, char **argv){
 	//width and height of each scene pixel
 	float pixelwidth, pixelheight;
 
-	//Centre of pixels type point
+	//Centre of type point
 	Point centreofpix;
 
 	pixelwidth = (XMAX - XMIN) / 512;
@@ -254,11 +167,11 @@ int main(int argc, char **argv){
 	for ( i = 0; i < 512; i++){
 		for ( j = 0; j < 512; j++){
 
-			pixels[i][j].r= 0.0;
-			pixels[i][j].g= 0.0;
-			pixels[i][j].b= 0.0;
+			pixelsImgMap->data[i][j].r= 0.0;
+			pixelsImgMap->data[i][j].g= 0.0;
+			pixelsImgMap->data[i][j].b= 0.0;
 
-			//Determining the centre of our pixels
+			//Determining the centre of our pixelsImgMap
 			centreofpix.x = XMIN + pixelwidth * (i + 0.5);
 			centreofpix.y = YMIN + pixelheight * (j + 0.5);
 			centreofpix.z = 0;
@@ -276,65 +189,24 @@ int main(int argc, char **argv){
 			//calling rayTrace function
 			rayTrace(COP, direction, i , j );
 
-			pixels[i][j].r = pixels[i][j].r/count;
-			pixels[i][j].g = pixels[i][j].g/count;
-			pixels[i][j].b = pixels[i][j].b/count;
+			pixelsImgMap->data[i][j].r = pixelsImgMap->data[i][j].r/count;
+			pixelsImgMap->data[i][j].g = pixelsImgMap->data[i][j].g/count;
+			pixelsImgMap->data[i][j].b = pixelsImgMap->data[i][j].b/count;
 
-			if(pixels[i][j].r < 0) pixels[i][j].r=0;
-			if(pixels[i][j].g < 0) pixels[i][j].g=0;
-			if(pixels[i][j].b < 0) pixels[i][j].b=0;
+			if(pixelsImgMap->data[i][j].r < 0) pixelsImgMap->data[i][j].r=0;
+			if(pixelsImgMap->data[i][j].g < 0) pixelsImgMap->data[i][j].g=0;
+			if(pixelsImgMap->data[i][j].b < 0) pixelsImgMap->data[i][j].b=0;
 
-			if(pixels[i][j].r > 1) pixels[i][j].r=1;
-			if(pixels[i][j].g > 1) pixels[i][j].g=1;
-			if(pixels[i][j].b > 1) pixels[i][j].b=1;
+			if(pixelsImgMap->data[i][j].r > 1) pixelsImgMap->data[i][j].r=1;
+			if(pixelsImgMap->data[i][j].g > 1) pixelsImgMap->data[i][j].g=1;
+			if(pixelsImgMap->data[i][j].b > 1) pixelsImgMap->data[i][j].b=1;
 		}
 	}
-	glutMainLoop();
-
-  return 0;
-}
-
-//Display function creating a graphics window
-void display()
-{
-
-	int r, c;
-
-	// clear the offscreen buffer
-	glClearColor(0.0, 0.0, 0.0, 0.0);/*Background colour*/
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	//Displaying scene pixels and forming an image
-	glBegin(GL_POINTS);
-
-	for (r = 0; r < 512; r++)
-		for (c = 0; c < 512; c++)
-		{
-			glColor3f(pixels[r][c].r, pixels[r][c].g, pixels[r][c].b);
-			glVertex2f(r, c);
-		}
-
-	glEnd();
-
-	glFlush();
-
-	// swap the visible on the offscreen buffer - required to prevent flickering.
-	//Function used in conjunction with GLUT DOUBLE
-	glutSwapBuffers();
-
-	// ask for glut to recall display() immediately
-	glutPostRedisplay();
-
-	return;
 }
 
 
-/***************************************************************************/
 /*we'll need to normalize several vectors*/
-float * normalize( Vector v){
+float * raytracingRenderer::normalize( Vector v){
 	float norm= sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);
 	int i;
 	for(	i=0 ; i<=2 ; i++){
@@ -348,7 +220,7 @@ given:
 Point P - the Point on the sphere
 Sphere O -
 */
-float *  normal( Point P, Sphere3D O) {
+float *  raytracingRenderer::normal( Point P, Sphere3D O) {
 	float * result = (float*) malloc (sizeof(float)*3);
 	result[0]= P.x - O.x ;
 	result[1]= P.y - O.y ;
@@ -362,7 +234,7 @@ using the value of the global variable COP.
 given -
 Point P
 */
-float *  viewVector( Point P) {
+float *  raytracingRenderer::viewVector( Point P) {
 	float * result = (float*) malloc (sizeof(float)*3);
 	result[0]= COP.x - P.x  ;
 	result[1]= COP.y - P.y  ;
@@ -377,7 +249,7 @@ given -
 Point P
 Point light
 */
-float *  lightVector( Point P, Light light) {
+float *  raytracingRenderer::lightVector( Point P, Light light) {
 	float * result = (float *) malloc (sizeof(float)*3);
 	result[0]= light.x - P.x  ;
 	result[1]= light.y - P.y  ;
@@ -392,7 +264,7 @@ given -
 Vector Na
 Vector La
 */
-float *  reflectVector( Vector Na, Vector La) {
+float *  raytracingRenderer::reflectVector( Vector Na, Vector La) {
 	float * result = (float *)malloc (sizeof(float)*3);
 	float scalarProduct = Na[0]*La[0]+Na[1]*La[1]+Na[2]*La[2];
 
@@ -412,7 +284,7 @@ Vector L - the light vector (from p to the light source)
 float ni - the refraction index of the first material
 float nj - the refraction index of the second material
 */
-float* refractVector(Point p, Vector N, Vector L, float ni, float nj ){
+float* raytracingRenderer::refractVector(Point p, Vector N, Vector L, float ni, float nj ){
 	float *result = (float*) malloc(sizeof(float) * 3 );
 	float n = ni/ nj;
 	float c =  - dot(N,L);
@@ -428,14 +300,14 @@ float* refractVector(Point p, Vector N, Vector L, float ni, float nj ){
 /****************************************************************************************/
 
 //scalar product
-float  dot( Vector Na, Vector La) {
+float  raytracingRenderer::dot( Vector Na, Vector La) {
 	return Na[0]*La[0]+Na[1]*La[1]+Na[2]*La[2];
 }
 
 /* return -v
 given, Vector v
 */
-float * invert(Vector v){
+float * raytracingRenderer::invert(Vector v){
 	float * result = (float *)malloc (sizeof(float)*3);
 	result[0] = - v[0];
 	result[1] = - v[1];
@@ -456,7 +328,7 @@ Colour Ks -	rgb values for the Ks coeficient
 float n - the specular intensity
  Colour init - the existing colour of the pixel
 */
-Colour reflectionIntensity( Vector Na, Point p, Colour Ia, Sphere3D ball,Vector Va){
+Colour raytracingRenderer::reflectionIntensity( Vector Na, Point p, Colour Ia, Sphere3D ball,Vector Va){
 
 	Colour result; //result will be the result of our calculation
 	float *La, *Ra; //the computed value of the light and reflection vectors
@@ -491,14 +363,14 @@ Colour reflectionIntensity( Vector Na, Point p, Colour Ia, Sphere3D ball,Vector 
 
 
 /*RayTracing recursive algorithm - involves following the path of rays from the COP - centre of camera projection through the centre of
-scene pixels.  Follow each of these rays to find that if it intersects an object to represent the colour of the
+scene pixelsImgMap.  Follow each of these rays to find that if it intersects an object to represent the colour of the
 corresponding scene pixel on the viewing plane.  At the end of this process scene pixles will form an image on the
 screen
 given :
 Point p
 Vector direction
 */
-void rayTrace(Point toto , Vector direction, int i , int j){
+void raytracingRenderer::rayTrace(Point toto , Vector direction, int i , int j){
 	count++;//increment the number of recursive call for rayTrace
 
 	//dx, dy, and dz are the values of the directional vector of the ray, (x0, y0, z0)
@@ -543,7 +415,7 @@ void rayTrace(Point toto , Vector direction, int i , int j){
 			//Using pythagoras to work out distance between intersection point and toto
 			distance = sqrt((toto.x - x) * (toto.x - x) + (toto.y - y) * (toto.y - y) + (toto.z - z )*( toto.z - z));
 
-			//Comparing distance with depth enabling pixels nearest to toto to form nearest image of sphere
+			//Comparing distance with depth enabling pixelsImgMap nearest to toto to form nearest image of sphere
 			if (distance < depth){
 
 				float * Na = normal( p , sphere[k] );
@@ -551,9 +423,9 @@ void rayTrace(Point toto , Vector direction, int i , int j){
 
 
 
-				pixels[i][j].r += reflectionIntensity( Na, p, Ia, sphere[k], Va).r;
-				pixels[i][j].g += reflectionIntensity( Na, p, Ia, sphere[k], Va).g;
-				pixels[i][j].b += reflectionIntensity( Na, p, Ia, sphere[k], Va).b;
+				pixelsImgMap->data[i][j].r += reflectionIntensity( Na, p, Ia, sphere[k], Va).r;
+				pixelsImgMap->data[i][j].g += reflectionIntensity( Na, p, Ia, sphere[k], Va).g;
+				pixelsImgMap->data[i][j].b += reflectionIntensity( Na, p, Ia, sphere[k], Va).b;
 
 				float * next = reflectVector(Na,invert(direction));
 				if( intersectionTest(p, next, sphere[k]) ){
@@ -575,7 +447,7 @@ given -
 Point p1 - the point on the sphere "ball"
 Vector La - the Light vector
 */
-int intersectionTest (Point p, Vector v, Sphere3D ball){
+int raytracingRenderer::intersectionTest (Point p, Vector v, Sphere3D ball){
 
    	int shadow = 0;
 
